@@ -23,6 +23,9 @@ import java.util.function.Consumer;
 
 /**
  * 百炼模型服务层
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Slf4j
 public class BailianService {

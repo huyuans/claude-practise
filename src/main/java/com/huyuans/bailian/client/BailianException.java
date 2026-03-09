@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 百炼模型调用异常
  *
- * @author bailian
+ * @author Kasper
  * @since 1.0.0
  */
 @Getter

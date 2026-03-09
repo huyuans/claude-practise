@@ -25,6 +25,9 @@ import java.util.UUID;
 
 /**
  * 百炼模型API客户端
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Slf4j
 @Component

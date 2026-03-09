@@ -9,6 +9,9 @@ import java.util.List;
 
 /**
  * Embedding响应模型
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Data
 @Builder

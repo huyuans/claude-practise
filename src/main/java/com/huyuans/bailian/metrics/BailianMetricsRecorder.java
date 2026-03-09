@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * 支持 Micrometer 指标收集，可集成 Prometheus、Graphana 等监控系统
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 @Slf4j

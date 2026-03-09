@@ -5,6 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 百炼模型配置属性类
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Data
 @ConfigurationProperties(prefix = "bailian")

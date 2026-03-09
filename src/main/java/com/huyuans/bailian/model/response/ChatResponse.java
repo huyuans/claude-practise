@@ -10,6 +10,9 @@ import java.util.Map;
 
 /**
  * 聊天响应模型
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Data
 @Builder

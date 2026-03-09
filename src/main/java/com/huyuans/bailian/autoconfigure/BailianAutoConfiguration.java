@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * 百炼模型自动配置类
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @AutoConfiguration
 @EnableConfigurationProperties(BailianProperties.class)

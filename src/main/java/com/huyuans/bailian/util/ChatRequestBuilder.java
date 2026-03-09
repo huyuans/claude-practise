@@ -19,7 +19,7 @@ import java.util.List;
  *     .build();
  * </pre>
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 public class ChatRequestBuilder {

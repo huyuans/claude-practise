@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * <p>
  * 提供流式响应的处理和收集功能
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 public class StreamUtils {

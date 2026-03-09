@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 使用简单的内存缓存，支持TTL过期和最大条目数限制
  * 生产环境建议使用Caffeine或Redis
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 @Slf4j

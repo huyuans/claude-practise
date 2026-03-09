@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * 注意：这是估算值，实际值可能有 5-10% 的误差。
  * 精确计数需要使用分词器（如 tiktoken）。
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 public class TokenUtils {

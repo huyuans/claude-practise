@@ -9,6 +9,9 @@ import java.util.List;
 
 /**
  * 流式聊天响应模型（SSE）
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @Data
 @Builder

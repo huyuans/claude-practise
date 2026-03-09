@@ -18,7 +18,7 @@ import java.time.Duration;
  * <p>
  * 通过调用百炼模型列表接口检查服务可用性
  *
- * @author huyuans
+ * @author Kasper
  * @since 1.0.0
  */
 @Slf4j
