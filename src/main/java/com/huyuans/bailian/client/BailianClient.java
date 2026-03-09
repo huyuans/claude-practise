@@ -51,23 +51,26 @@ public class BailianClient {
 
     /**
      * 创建HTTP客户端（支持连接池）
+     * <p>
+     * 连接池可以复用TCP连接，减少握手开销，提升高并发场景下的性能
      */
     private HttpClient createHttpClient(BailianProperties props) {
         HttpClient httpClient = HttpClient.create();
 
-        // 配置连接池
+        // 配置连接池：复用TCP连接，减少握手开销
         if (props.getConnectionPool().isEnabled()) {
             BailianProperties.ConnectionPoolConfig poolConfig = props.getConnectionPool();
             ConnectionProvider provider = ConnectionProvider.builder("bailian-pool")
-                    .maxConnections(poolConfig.getMaxConnections())
-                    .pendingAcquireTimeout(Duration.ofMillis(poolConfig.getAcquireTimeout()))
-                    .maxIdleTime(Duration.ofMillis(poolConfig.getIdleTimeout()))
+                    .maxConnections(poolConfig.getMaxConnections())           // 最大连接数
+                    .pendingAcquireTimeout(Duration.ofMillis(poolConfig.getAcquireTimeout()))  // 获取连接超时
+                    .maxIdleTime(Duration.ofMillis(poolConfig.getIdleTimeout()))  // 空闲连接超时
                     .build();
 
             httpClient = HttpClient.create(provider);
             log.info("百炼API连接池已启用: maxConnections={}", poolConfig.getMaxConnections());
         }
 
+        // 设置响应超时，防止请求长时间阻塞
         return httpClient.responseTimeout(Duration.ofMillis(props.getTimeout()));
     }
 
@@ -165,6 +168,9 @@ public class BailianClient {
 
     /**
      * 应用重试策略
+     * <p>
+     * 使用指数退避算法进行重试，避免对服务端造成过大压力
+     * 只有可重试的错误（5xx、429、网络异常）才会触发重试
      */
     private <T> Mono<T> applyRetry(Mono<T> source) {
         if (!properties.getRetry().isEnabled()) {
@@ -173,8 +179,8 @@ public class BailianClient {
 
         BailianProperties.RetryConfig retryConfig = properties.getRetry();
         return source.retryWhen(Retry.backoff(retryConfig.getMaxAttempts(), Duration.ofMillis(retryConfig.getInitialDelay()))
-                .maxBackoff(Duration.ofMillis(retryConfig.getMaxDelay()))
-                .filter(this::isRetryable)
+                .maxBackoff(Duration.ofMillis(retryConfig.getMaxDelay()))  // 最大退避时间
+                .filter(this::isRetryable)  // 只重试可重试的错误
                 .doBeforeRetry(signal -> log.warn("重试请求, 第{}次, 原因: {}", 
                         signal.totalRetries() + 1, signal.failure().getMessage())));
     }

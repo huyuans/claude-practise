@@ -71,6 +71,9 @@ public class EmbeddingCache {
 
     /**
      * 存入Embedding到缓存
+     * <p>
+     * 当缓存达到上限时，会清除一半的旧条目（简单的近似LRU策略）
+     * 生产环境建议使用Caffeine等成熟缓存框架
      *
      * @param key      缓存key
      * @param response Embedding响应
@@ -80,7 +83,8 @@ public class EmbeddingCache {
             return;
         }
 
-        // 简单的LRU：如果超过最大条目数，清除部分旧条目
+        // 简单的LRU：如果超过最大条目数，清除一半旧条目
+        // 注意：这不是真正的LRU，只是简单的清理策略
         if (cache.size() >= config.getMaxSize()) {
             log.debug("缓存已满，清除部分条目");
             cache.keySet().stream()

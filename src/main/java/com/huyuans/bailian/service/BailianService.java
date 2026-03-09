@@ -86,11 +86,15 @@ public class BailianService {
 
     /**
      * 聊天（可配置参数）
+     * <p>
+     * 核心聊天方法，支持自定义模型、温度等参数
+     * 自动记录请求耗时和token使用量到指标系统
      *
      * @param request 聊天请求
      * @return 聊天响应
      */
     public Mono<ChatResponse> chat(ChatRequest request) {
+        // 如果未指定模型，使用默认模型
         if (request.getModel() == null) {
             request.setModel(properties.getDefaultModel());
         }
@@ -98,12 +102,14 @@ public class BailianService {
         final long startTime = System.currentTimeMillis();
         
         return bailianClient.chat(request)
+                // 成功时记录指标
                 .doOnSuccess(response -> {
                     long duration = System.currentTimeMillis() - startTime;
                     Integer tokens = response.getUsage() != null ? 
                             response.getUsage().getTotalTokens() : null;
                     metricsRecorder.recordChatRequest(model, true, duration, tokens != null ? tokens.longValue() : null);
                 })
+                // 失败时也记录指标（用于监控错误率）
                 .doOnError(e -> {
                     long duration = System.currentTimeMillis() - startTime;
                     metricsRecorder.recordChatRequest(model, false, duration, null);
@@ -197,6 +203,9 @@ public class BailianService {
 
     /**
      * Embedding（多条文本，带缓存）
+     * <p>
+     * 支持批量文本embedding，自动利用缓存避免重复计算
+     * 缓存命中可显著降低API调用成本和延迟
      *
      * @param texts 文本列表
      * @return Embedding响应
@@ -205,7 +214,7 @@ public class BailianService {
         String model = properties.getDefaultEmbeddingModel();
         String cacheKey = embeddingCache.generateKey(model, texts);
 
-        // 尝试从缓存获取
+        // 尝试从缓存获取，命中则直接返回（避免API调用）
         Optional<EmbeddingResponse> cached = embeddingCache.get(cacheKey);
         if (cached.isPresent()) {
             metricsRecorder.recordEmbeddingCacheHit();
@@ -216,7 +225,7 @@ public class BailianService {
         final long startTime = System.currentTimeMillis();
         final int textCount = texts.size();
 
-        // 缓存未命中，调用API
+        // 缓存未命中，调用API并缓存结果
         return embedding(EmbeddingRequest.builder()
                 .model(model)
                 .input(texts)
