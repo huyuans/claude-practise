@@ -43,8 +43,10 @@ public class BailianHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
+        log.debug("开始百炼 API 健康检查, baseUrl: {}", properties.getBaseUrl());
         try {
             // 简单检查：发送请求检查 API 是否可达
+            log.info("正在检查百炼 API 可用性...");
             String response = webClient.get()
                     .uri(HEALTH_CHECK_PATH)
                     .retrieve()
