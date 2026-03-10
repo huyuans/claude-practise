@@ -3,7 +3,6 @@ package com.huyuans.bailian.autoconfigure;
 import com.huyuans.bailian.cache.EmbeddingCache;
 import com.huyuans.bailian.client.BailianClient;
 import com.huyuans.bailian.config.BailianProperties;
-import com.huyuans.bailian.metrics.BailianMetricsRecorder;
 import com.huyuans.bailian.service.BailianService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -67,27 +66,6 @@ class BailianAutoConfigurationTest {
         assertEquals(50, poolConfig.getMaxConnectionsPerHost());
         assertEquals(20000, poolConfig.getIdleTimeout());
         assertEquals(10000, poolConfig.getAcquireTimeout());
-    }
-
-    @Test
-    @DisplayName("健康检查配置测试")
-    void testHealthCheckConfig() {
-        BailianProperties properties = new BailianProperties();
-        BailianProperties.HealthCheckConfig healthConfig = properties.getHealthCheck();
-        
-        assertNotNull(healthConfig);
-        assertFalse(healthConfig.isEnabled());
-        assertEquals(60000, healthConfig.getInterval());
-    }
-
-    @Test
-    @DisplayName("指标配置测试")
-    void testMetricsConfig() {
-        BailianProperties properties = new BailianProperties();
-        BailianProperties.MetricsConfig metricsConfig = properties.getMetrics();
-        
-        assertNotNull(metricsConfig);
-        assertTrue(metricsConfig.isEnabled());
     }
 
     @Test

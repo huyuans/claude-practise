@@ -53,16 +53,6 @@ public class BailianProperties {
      */
     private ConnectionPoolConfig connectionPool = new ConnectionPoolConfig();
 
-    /**
-     * 健康检查配置
-     */
-    private HealthCheckConfig healthCheck = new HealthCheckConfig();
-
-    /**
-     * 指标配置
-     */
-    private MetricsConfig metrics = new MetricsConfig();
-
     @Data
     public static class RetryConfig {
         /**
@@ -137,24 +127,4 @@ public class BailianProperties {
         private long acquireTimeout = 10000;
     }
 
-    @Data
-    public static class HealthCheckConfig {
-        /**
-         * 是否启用健康检查
-         */
-        private boolean enabled = false;
-
-        /**
-         * 健康检查间隔（毫秒）
-         */
-        private long interval = 60000;
     }
-
-    @Data
-    public static class MetricsConfig {
-        /**
-         * 是否启用指标收集
-         */
-        private boolean enabled = true;
-    }
-}

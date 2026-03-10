@@ -79,25 +79,6 @@ class BailianPropertiesTest {
     }
 
     @Test
-    @DisplayName("健康检查配置默认值")
-    void testHealthCheckDefaults() {
-        BailianProperties properties = new BailianProperties();
-        BailianProperties.HealthCheckConfig healthCheck = properties.getHealthCheck();
-        
-        assertFalse(healthCheck.isEnabled());
-        assertEquals(60000, healthCheck.getInterval());
-    }
-
-    @Test
-    @DisplayName("指标配置默认值")
-    void testMetricsDefaults() {
-        BailianProperties properties = new BailianProperties();
-        BailianProperties.MetricsConfig metrics = properties.getMetrics();
-        
-        assertTrue(metrics.isEnabled());
-    }
-
-    @Test
     @DisplayName("重试配置修改")
     void testRetryConfigModification() {
         BailianProperties properties = new BailianProperties();

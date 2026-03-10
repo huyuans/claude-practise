@@ -3,7 +3,6 @@ package com.huyuans.bailian.service;
 import com.huyuans.bailian.cache.EmbeddingCache;
 import com.huyuans.bailian.client.BailianClient;
 import com.huyuans.bailian.config.BailianProperties;
-import com.huyuans.bailian.metrics.BailianMetricsRecorder;
 import com.huyuans.bailian.model.request.ChatRequest;
 import com.huyuans.bailian.model.request.EmbeddingRequest;
 import com.huyuans.bailian.model.response.ChatResponse;
@@ -33,14 +32,12 @@ public class BailianService {
     private final BailianClient bailianClient;
     private final BailianProperties properties;
     private final EmbeddingCache embeddingCache;
-    private final BailianMetricsRecorder metricsRecorder;
 
     public BailianService(BailianClient bailianClient, BailianProperties properties, 
-                          EmbeddingCache embeddingCache, BailianMetricsRecorder metricsRecorder) {
+                          EmbeddingCache embeddingCache) {
         this.bailianClient = bailianClient;
         this.properties = properties;
         this.embeddingCache = embeddingCache;
-        this.metricsRecorder = metricsRecorder;
     }
 
     /**
@@ -88,7 +85,6 @@ public class BailianService {
      * 聊天（可配置参数）
      * <p>
      * 核心聊天方法，支持自定义模型、温度等参数
-     * 自动记录请求耗时和token使用量到指标系统
      *
      * @param request 聊天请求
      * @return 聊天响应
@@ -98,22 +94,7 @@ public class BailianService {
         if (request.getModel() == null) {
             request.setModel(properties.getDefaultModel());
         }
-        final String model = request.getModel();
-        final long startTime = System.currentTimeMillis();
-        
-        return bailianClient.chat(request)
-                // 成功时记录指标
-                .doOnSuccess(response -> {
-                    long duration = System.currentTimeMillis() - startTime;
-                    Integer tokens = response.getUsage() != null ? 
-                            response.getUsage().getTotalTokens() : null;
-                    metricsRecorder.recordChatRequest(model, true, duration, tokens != null ? tokens.longValue() : null);
-                })
-                // 失败时也记录指标（用于监控错误率）
-                .doOnError(e -> {
-                    long duration = System.currentTimeMillis() - startTime;
-                    metricsRecorder.recordChatRequest(model, false, duration, null);
-                });
+        return bailianClient.chat(request);
     }
 
     /**
@@ -159,18 +140,7 @@ public class BailianService {
         if (request.getModel() == null) {
             request.setModel(properties.getDefaultModel());
         }
-        final String model = request.getModel();
-        final long startTime = System.currentTimeMillis();
-        
-        return bailianClient.chatStream(request)
-                .doOnComplete(() -> {
-                    long duration = System.currentTimeMillis() - startTime;
-                    metricsRecorder.recordStreamRequest(model, true, duration);
-                })
-                .doOnError(e -> {
-                    long duration = System.currentTimeMillis() - startTime;
-                    metricsRecorder.recordStreamRequest(model, false, duration);
-                });
+        return bailianClient.chatStream(request);
     }
 
     /**
@@ -217,28 +187,15 @@ public class BailianService {
         // 尝试从缓存获取，命中则直接返回（避免API调用）
         Optional<EmbeddingResponse> cached = embeddingCache.get(cacheKey);
         if (cached.isPresent()) {
-            metricsRecorder.recordEmbeddingCacheHit();
             return Mono.just(cached.get());
         }
-
-        metricsRecorder.recordEmbeddingCacheMiss();
-        final long startTime = System.currentTimeMillis();
-        final int textCount = texts.size();
 
         // 缓存未命中，调用API并缓存结果
         return embedding(EmbeddingRequest.builder()
                 .model(model)
                 .input(texts)
                 .build())
-                .doOnNext(response -> {
-                    embeddingCache.put(cacheKey, response);
-                    long duration = System.currentTimeMillis() - startTime;
-                    metricsRecorder.recordEmbeddingRequest(model, true, duration, textCount);
-                })
-                .doOnError(e -> {
-                    long duration = System.currentTimeMillis() - startTime;
-                    metricsRecorder.recordEmbeddingRequest(model, false, duration, textCount);
-                });
+                .doOnNext(response -> embeddingCache.put(cacheKey, response));
     }
 
     /**

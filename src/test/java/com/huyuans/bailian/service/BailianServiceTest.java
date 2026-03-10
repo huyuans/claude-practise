@@ -3,7 +3,6 @@ package com.huyuans.bailian.service;
 import com.huyuans.bailian.cache.EmbeddingCache;
 import com.huyuans.bailian.client.BailianClient;
 import com.huyuans.bailian.config.BailianProperties;
-import com.huyuans.bailian.metrics.BailianMetricsRecorder;
 import com.huyuans.bailian.model.request.ChatRequest;
 import com.huyuans.bailian.model.request.EmbeddingRequest;
 import com.huyuans.bailian.model.response.ChatResponse;
@@ -41,9 +40,6 @@ class BailianServiceTest {
     @Mock
     private EmbeddingCache embeddingCache;
 
-    @Mock
-    private BailianMetricsRecorder metricsRecorder;
-
     private BailianService service;
     private BailianProperties properties;
 
@@ -52,7 +48,7 @@ class BailianServiceTest {
         properties = new BailianProperties();
         properties.setDefaultModel("qwen-turbo");
         properties.setDefaultEmbeddingModel("text-embedding-v3");
-        service = new BailianService(bailianClient, properties, embeddingCache, metricsRecorder);
+        service = new BailianService(bailianClient, properties, embeddingCache);
     }
 
     @Test
