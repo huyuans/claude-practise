@@ -63,6 +63,11 @@ public class BailianProperties {
      */
     private MetricsConfig metrics = new MetricsConfig();
 
+    /**
+     * 会话管理配置
+     */
+    private Conversation conversation = new Conversation();
+
     @Data
     public static class RetryConfig {
         /**
@@ -156,5 +161,23 @@ public class BailianProperties {
          * 是否启用指标收集
          */
         private boolean enabled = true;
+    }
+
+    @Data
+    public static class Conversation {
+        /**
+         * 是否启用会话管理
+         */
+        private boolean enabled = false;
+
+        /**
+         * 会话过期时间（分钟）
+         */
+        private long expireMinutes = 60;
+
+        /**
+         * 单会话最大 token 数
+         */
+        private int maxTokensPerSession = 4000;
     }
 }

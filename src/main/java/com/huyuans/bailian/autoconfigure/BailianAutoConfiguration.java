@@ -5,6 +5,7 @@ import com.huyuans.bailian.client.BailianClient;
 import com.huyuans.bailian.config.BailianProperties;
 import com.huyuans.bailian.metrics.BailianMetricsRecorder;
 import com.huyuans.bailian.service.BailianService;
+import com.huyuans.bailian.session.ConversationManager;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -51,5 +52,18 @@ public class BailianAutoConfiguration {
                                           EmbeddingCache embeddingCache,
                                           BailianMetricsRecorder metricsRecorder) {
         return new BailianService(bailianClient, properties, embeddingCache, metricsRecorder);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bailian.conversation", name = "enabled", havingValue = "true", matchIfMissing = false)
+    public ConversationManager conversationManager(BailianService bailianService, 
+                                                    BailianProperties properties) {
+        BailianProperties.Conversation conversation = properties.getConversation();
+        return new ConversationManager(
+                bailianService,
+                conversation.getExpireMinutes(),
+                conversation.getMaxTokensPerSession()
+        );
     }
 }
