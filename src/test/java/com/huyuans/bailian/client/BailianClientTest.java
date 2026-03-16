@@ -24,28 +24,28 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * BailianClient 单元测试
- * <p>
- * 测试百炼 API 客户端的核心功能，包括：
- * <ul>
- *   <li>客户端初始化</li>
- *   <li>请求体构建</li>
- *   <li>响应模型解析</li>
- *   <li>异常处理</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("百炼客户端测试")
 class BailianClientTest {
 
-    /** 待测试的客户端实例 */
+    
     private BailianClient client;
     
-    /** 配置属性 */
+    
     private BailianProperties properties;
 
     @BeforeEach
@@ -57,12 +57,12 @@ class BailianClientTest {
         properties.setDefaultEmbeddingModel("text-embedding-v3");
         properties.setTimeout(60000);
         
-        // 配置重试
+        
         BailianProperties.RetryConfig retryConfig = new BailianProperties.RetryConfig();
-        retryConfig.setEnabled(false); // 测试时禁用重试
+        retryConfig.setEnabled(false); 
         properties.setRetry(retryConfig);
         
-        // 配置连接池
+        
         BailianProperties.ConnectionPoolConfig poolConfig = new BailianProperties.ConnectionPoolConfig();
         poolConfig.setEnabled(false);
         properties.setConnectionPool(poolConfig);

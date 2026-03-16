@@ -23,25 +23,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * 百炼模型API客户端
- * <p>
- * 阿里云百炼大模型服务的核心HTTP客户端，基于Spring WebFlux实现响应式调用。
- * 支持同步/流式聊天、文本向量嵌入(Embedding)等核心功能。
- * <p>
- * 主要特性：
- * <ul>
- *   <li>连接池复用：减少TCP握手开销，提升高并发性能</li>
- *   <li>自动重试：指数退避策略，应对临时故障</li>
- *   <li>请求追踪：通过X-Correlation-ID实现链路追踪</li>
- *   <li>错误处理：统一异常封装，便于业务层处理</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- * @see BailianException 自定义异常类
- * @see BailianProperties 配置属性
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Slf4j
 @Component
 public class BailianClient {
@@ -62,37 +62,37 @@ public class BailianClient {
                 .build();
     }
 
-    /**
-     * 创建HTTP客户端（支持连接池）
-     * <p>
-     * 连接池可以复用TCP连接，减少握手开销，提升高并发场景下的性能
-     */
+    
+
+
+
+
     private HttpClient createHttpClient(BailianProperties props) {
         HttpClient httpClient = HttpClient.create();
 
-        // 配置连接池：复用TCP连接，减少握手开销
+        
         if (props.getConnectionPool().isEnabled()) {
             BailianProperties.ConnectionPoolConfig poolConfig = props.getConnectionPool();
             ConnectionProvider provider = ConnectionProvider.builder("bailian-pool")
-                    .maxConnections(poolConfig.getMaxConnections())           // 最大连接数
-                    .pendingAcquireTimeout(Duration.ofMillis(poolConfig.getAcquireTimeout()))  // 获取连接超时
-                    .maxIdleTime(Duration.ofMillis(poolConfig.getIdleTimeout()))  // 空闲连接超时
+                    .maxConnections(poolConfig.getMaxConnections())           
+                    .pendingAcquireTimeout(Duration.ofMillis(poolConfig.getAcquireTimeout()))  
+                    .maxIdleTime(Duration.ofMillis(poolConfig.getIdleTimeout()))  
                     .build();
 
             httpClient = HttpClient.create(provider);
             log.info("百炼API连接池已启用: maxConnections={}", poolConfig.getMaxConnections());
         }
 
-        // 设置响应超时，防止请求长时间阻塞
+        
         return httpClient.responseTimeout(Duration.ofMillis(props.getTimeout()));
     }
 
-    /**
-     * 同步聊天
-     *
-     * @param request 聊天请求
-     * @return 聊天响应
-     */
+    
+
+
+
+
+
     public Mono<ChatResponse> chat(ChatRequest request) {
         String correlationId = generateCorrelationId();
         log.debug("[{}] 发送聊天请求, model={}", correlationId, request.getModel());
@@ -116,12 +116,12 @@ public class BailianClient {
                 });
     }
 
-    /**
-     * 流式聊天
-     *
-     * @param request 聊天请求
-     * @return 流式聊天响应
-     */
+    
+
+
+
+
+
     public Flux<ChatStreamResponse> chatStream(ChatRequest request) {
         String correlationId = generateCorrelationId();
         log.debug("[{}] 发送流式聊天请求, model={}", correlationId, request.getModel());
@@ -143,12 +143,12 @@ public class BailianClient {
                 });
     }
 
-    /**
-     * Embedding向量生成
-     *
-     * @param request Embedding请求
-     * @return Embedding响应
-     */
+    
+
+
+
+
+
     public Mono<EmbeddingResponse> embedding(EmbeddingRequest request) {
         String correlationId = generateCorrelationId();
         log.debug("[{}] 发送Embedding请求, model={}", correlationId, request.getModel());
@@ -172,19 +172,19 @@ public class BailianClient {
                 });
     }
 
-    /**
-     * 生成关联ID
-     */
+    
+
+
     private String generateCorrelationId() {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
-    /**
-     * 应用重试策略
-     * <p>
-     * 使用指数退避算法进行重试，避免对服务端造成过大压力
-     * 只有可重试的错误（5xx、429、网络异常）才会触发重试
-     */
+    
+
+
+
+
+
     private <T> Mono<T> applyRetry(Mono<T> source) {
         if (!properties.getRetry().isEnabled()) {
             return source;
@@ -192,31 +192,31 @@ public class BailianClient {
 
         BailianProperties.RetryConfig retryConfig = properties.getRetry();
         return source.retryWhen(Retry.backoff(retryConfig.getMaxAttempts(), Duration.ofMillis(retryConfig.getInitialDelay()))
-                .maxBackoff(Duration.ofMillis(retryConfig.getMaxDelay()))  // 最大退避时间
-                .filter(this::isRetryable)  // 只重试可重试的错误
+                .maxBackoff(Duration.ofMillis(retryConfig.getMaxDelay()))  
+                .filter(this::isRetryable)  
                 .doBeforeRetry(signal -> log.warn("重试请求, 第{}次, 原因: {}", 
                         signal.totalRetries() + 1, signal.failure().getMessage())));
     }
 
-    /**
-     * 判断是否可重试
-     */
+    
+
+
     private boolean isRetryable(Throwable error) {
         if (error instanceof WebClientResponseException e) {
             int status = e.getStatusCode().value();
-            // 5xx 服务端错误或 429 限流可重试
+            
             return status >= 500 || status == 429;
         }
-        // 网络异常可重试
+        
         return true;
     }
 
-    /**
-     * 构建聊天请求体
-     *
-     * @param request 聊天请求
-     * @return 请求体Map
-     */
+    
+
+
+
+
+
     private Map<String, Object> buildChatRequest(ChatRequest request) {
         Map<String, Object> input = new HashMap<>();
         input.put("messages", request.getMessages());
@@ -234,12 +234,12 @@ public class BailianClient {
         return body;
     }
 
-    /**
-     * 构建流式聊天请求体
-     *
-     * @param request 聊天请求
-     * @return 请求体Map
-     */
+    
+
+
+
+
+
     private Map<String, Object> buildStreamChatRequest(ChatRequest request) {
         Map<String, Object> input = new HashMap<>();
         input.put("messages", request.getMessages());
@@ -257,12 +257,12 @@ public class BailianClient {
         return body;
     }
 
-    /**
-     * 构建Embedding请求体
-     *
-     * @param request Embedding请求
-     * @return 请求体Map
-     */
+    
+
+
+
+
+
     private Map<String, Object> buildEmbeddingRequest(EmbeddingRequest request) {
         Map<String, Object> input = new HashMap<>();
         input.put("texts", request.getInput());

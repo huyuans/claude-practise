@@ -9,20 +9,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * TokenUtils 单元测试
- * <p>
- * 测试 Token 计数工具的功能，包括：
- * <ul>
- *   <li>中文、英文、混合文本的 token 估算</li>
- *   <li>多条消息的 token 估算</li>
- *   <li>文本截断功能</li>
- *   <li>token 数量格式化</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @DisplayName("Token工具类测试")
 class TokenUtilsTest {
 
@@ -36,7 +36,7 @@ class TokenUtilsTest {
     @Test
     @DisplayName("纯中文文本估算")
     void testChineseText() {
-        // 中文约 1.5 tokens/字
+        
         String text = "你好世界";
         int tokens = TokenUtils.estimateTokens(text);
         assertTrue(tokens >= 4, "中文文本应该有token");
@@ -46,7 +46,7 @@ class TokenUtilsTest {
     @Test
     @DisplayName("纯英文文本估算")
     void testEnglishText() {
-        // 英文单词约 1.3 tokens/词
+        
         String text = "hello world test";
         int tokens = TokenUtils.estimateTokens(text);
         assertTrue(tokens >= 3, "3个英文单词应该有token");
@@ -75,7 +75,7 @@ class TokenUtilsTest {
         List<String> messages = Arrays.asList("你好", "hello");
         int tokens = TokenUtils.estimateMessagesTokens(messages);
         assertTrue(tokens > 0, "多条消息应该有token");
-        // 每条消息额外约4 tokens开销，整体额外约3 tokens
+        
         assertTrue(tokens >= 7, "应该包含消息开销");
     }
 

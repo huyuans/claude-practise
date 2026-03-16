@@ -19,27 +19,27 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * ConversationManager 单元测试
- * <p>
- * 测试对话会话管理器的功能，包括：
- * <ul>
- *   <li>会话的创建和删除</li>
- *   <li>多轮对话的历史管理</li>
- *   <li>系统提示词的设置</li>
- *   <li>会话清空功能</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class ConversationManagerTest {
 
-    /** Mock 的百炼服务 */
+    
     @Mock
     private BailianService bailianService;
 
-    /** 待测试的会话管理器 */
+    
     private ConversationManager manager;
 
     @BeforeEach
@@ -68,7 +68,7 @@ class ConversationManagerTest {
     @Test
     @DisplayName("对话并自动管理历史")
     void testChat() {
-        // Mock 响应
+        
         ChatResponse mockResponse = new ChatResponse();
         mockResponse.setChoices(List.of(
                 new Choice(0, new Message("assistant", "你好！我是助手"), null)
@@ -81,7 +81,7 @@ class ConversationManagerTest {
                 .expectNext("你好！我是助手")
                 .verifyComplete();
 
-        // 验证历史已更新
+        
         List<ChatRequest.Message> history = manager.getHistory(sessionId).orElseThrow();
         assertEquals(2, history.size());
         assertEquals("user", history.get(0).getRole());
@@ -93,7 +93,7 @@ class ConversationManagerTest {
     @Test
     @DisplayName("多轮对话")
     void testMultiTurnChat() {
-        // Mock 响应
+        
         ChatResponse response1 = new ChatResponse();
         response1.setChoices(List.of(new Choice(0, new Message("assistant", "回复1"), null)));
         
@@ -106,17 +106,17 @@ class ConversationManagerTest {
 
         String sessionId = manager.createSession();
 
-        // 第一轮
+        
         StepVerifier.create(manager.chat(sessionId, "问题1"))
                 .expectNext("回复1")
                 .verifyComplete();
 
-        // 第二轮
+        
         StepVerifier.create(manager.chat(sessionId, "问题2"))
                 .expectNext("回复2")
                 .verifyComplete();
 
-        // 验证历史
+        
         List<ChatRequest.Message> history = manager.getHistory(sessionId).orElseThrow();
         assertEquals(4, history.size());
     }

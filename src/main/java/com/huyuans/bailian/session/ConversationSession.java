@@ -7,68 +7,68 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 对话会话
- * <p>
- * 封装单次对话的上下文，包括消息历史、token 估算、过期时间等。
- * 支持自动截断超出上下文限制的历史消息。
- * <p>
- * 特性：
- * <ul>
- *   <li>自动管理消息历史，支持多轮对话</li>
- *   <li>粗略估算 token 数，超限时自动截断旧消息</li>
- *   <li>记录最后活跃时间，支持会话过期清理</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @Data
 public class ConversationSession {
 
-    /**
-     * 会话 ID
-     */
+    
+
+
     private final String sessionId;
 
-    /**
-     * 系统提示词
-     * <p>
-     * 在所有消息之前添加，用于设定 AI 行为
-     */
+    
+
+
+
+
     private String systemPrompt;
 
-    /**
-     * 消息历史
-     * <p>
-     * 按时间顺序存储用户和助手的对话
-     */
+    
+
+
+
+
     private final List<ChatRequest.Message> messages = new ArrayList<>();
 
-    /**
-     * 创建时间
-     */
+    
+
+
     private final Instant createdAt = Instant.now();
 
-    /**
-     * 最后活跃时间
-     * <p>
-     * 用于判断会话是否过期
-     */
+    
+
+
+
+
     private Instant lastActiveAt = Instant.now();
 
-    /**
-     * 预估 token 数
-     * <p>
-     * 粗略估算，用于控制上下文长度
-     */
+    
+
+
+
+
     private int estimatedTokens = 0;
 
-    /**
-     * 最大 token 数限制
-     * <p>
-     * 超出时会自动截断旧消息
-     */
+    
+
+
+
+
     private int maxTokens = 4000;
 
     public ConversationSession(String sessionId) {
@@ -80,9 +80,9 @@ public class ConversationSession {
         this.systemPrompt = systemPrompt;
     }
 
-    /**
-     * 添加用户消息
-     */
+    
+
+
     public void addUserMessage(String content) {
         messages.add(ChatRequest.Message.user(content));
         lastActiveAt = Instant.now();
@@ -90,18 +90,18 @@ public class ConversationSession {
         trimIfNeeded();
     }
 
-    /**
-     * 添加助手消息
-     */
+    
+
+
     public void addAssistantMessage(String content) {
         messages.add(ChatRequest.Message.assistant(content));
         lastActiveAt = Instant.now();
         estimatedTokens += estimateTokens(content);
     }
 
-    /**
-     * 获取所有消息（包含系统提示词）
-     */
+    
+
+
     public List<ChatRequest.Message> getAllMessages() {
         List<ChatRequest.Message> all = new ArrayList<>();
         if (systemPrompt != null && !systemPrompt.isEmpty()) {
@@ -111,39 +111,39 @@ public class ConversationSession {
         return all;
     }
 
-    /**
-     * 清空历史
-     */
+    
+
+
     public void clear() {
         messages.clear();
         estimatedTokens = 0;
         lastActiveAt = Instant.now();
     }
 
-    /**
-     * 是否过期
-     */
+    
+
+
     public boolean isExpired(long expireMinutes) {
         return Instant.now().minusSeconds(expireMinutes * 60).isAfter(lastActiveAt);
     }
 
-    /**
-     * 超出 token 限制时截断旧消息
-     */
+    
+
+
     private void trimIfNeeded() {
         while (estimatedTokens > maxTokens && messages.size() > 2) {
-            // 成对删除最早的对话（用户+助手）
+            
             ChatRequest.Message removed = messages.remove(0);
             estimatedTokens -= estimateTokens(removed.getContent());
         }
     }
 
-    /**
-     * 粗略估算 token 数（中文约 1.5 字/token，英文约 4 字符/token）
-     */
+    
+
+
     private int estimateTokens(String text) {
         if (text == null) return 0;
-        // 简单估算：每 3 个字符约 1 token
+        
         return text.length() / 3 + 1;
     }
 }

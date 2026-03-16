@@ -28,41 +28,41 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * BailianService 单元测试
- * <p>
- * 测试百炼服务层的核心功能，包括：
- * <ul>
- *   <li>简单聊天和带系统提示的聊天</li>
- *   <li>多轮对话管理</li>
- *   <li>流式聊天和文本收集</li>
- *   <li>Embedding 生成和缓存</li>
- *   <li>默认模型的应用</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("百炼服务测试")
 class BailianServiceTest {
 
-    /** Mock 的 API 客户端 */
+    
     @Mock
     private BailianClient bailianClient;
 
-    /** Mock 的 Embedding 缓存 */
+    
     @Mock
     private EmbeddingCache embeddingCache;
 
-    /** Mock 的指标记录器 */
+    
     @Mock
     private BailianMetricsRecorder metricsRecorder;
 
-    /** 待测试的服务实例 */
+    
     private BailianService service;
     
-    /** 配置属性 */
+    
     private BailianProperties properties;
 
     @BeforeEach
@@ -239,7 +239,7 @@ class BailianServiceTest {
                 .verifyComplete();
     }
 
-    // ==================== Helper Methods ====================
+    
 
     private ChatResponse createChatResponse(String content) {
         ChatResponse.Message message = ChatResponse.Message.builder()

@@ -10,28 +10,28 @@ import org.junit.jupiter.api.DisplayName;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * BailianMetricsRecorder 单元测试
- * <p>
- * 测试百炼指标记录器的功能，包括：
- * <ul>
- *   <li>聊天请求指标的记录</li>
- *   <li>流式请求指标的记录</li>
- *   <li>Embedding 请求指标的记录</li>
- *   <li>缓存命中率指标的记录</li>
- *   <li>空 MeterRegistry 时的安全处理</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @DisplayName("指标记录器测试")
 class BailianMetricsRecorderTest {
 
-    /** Micrometer 注册表 */
+    
     private MeterRegistry meterRegistry;
     
-    /** 待测试的指标记录器 */
+    
     private BailianMetricsRecorder recorder;
 
     @BeforeEach
@@ -147,7 +147,7 @@ class BailianMetricsRecorderTest {
     void testNullMeterRegistry() {
         BailianMetricsRecorder nullRecorder = new BailianMetricsRecorder(null);
         
-        // 不应抛出异常
+        
         assertDoesNotThrow(() -> {
             nullRecorder.recordChatRequest("model", true, 100L, 10L);
             nullRecorder.recordStreamRequest("model", true, 100L);
@@ -186,7 +186,7 @@ class BailianMetricsRecorderTest {
         recorder.recordChatRequest("qwen-turbo", true, 100L, 10L);
         recorder.recordChatRequest("qwen-max", true, 100L, 20L);
 
-        // 验证有记录（不同模型会有不同的tag）
+        
         Counter counter = meterRegistry.find("bailian.chat.requests").counter();
         assertNotNull(counter);
     }

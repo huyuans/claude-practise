@@ -13,23 +13,23 @@ import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * BailianHealthIndicator 单元测试
- * <p>
- * 测试百炼 API 健康检查指示器的功能，包括：
- * <ul>
- *   <li>健康状态的构建</li>
- *   <li>配置属性的访问</li>
- *   <li>错误状态的处理</li>
- * </ul>
- *
- * @author Kasper
- * @since 1.0.0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @DisplayName("健康检查指示器测试")
 class BailianHealthIndicatorTest {
 
-    /** 配置属性 */
+    
     private BailianProperties properties;
 
     @BeforeEach
@@ -43,8 +43,8 @@ class BailianHealthIndicatorTest {
     @Test
     @DisplayName("健康检查返回UP状态")
     void testHealthUp() {
-        // 由于 BailianHealthIndicator 需要真实的 WebClient，
-        // 这里我们测试构造函数和基本属性
+        
+        
         BailianHealthIndicator indicator = new BailianHealthIndicator(properties);
         assertNotNull(indicator);
     }
@@ -107,7 +107,7 @@ class BailianHealthIndicatorTest {
     @Test
     @DisplayName("健康检查路径常量测试")
     void testHealthCheckPath() {
-        // 验证健康检查路径是正确的
+        
         String expectedPath = "/api/v1/models";
         assertNotNull(expectedPath);
         assertTrue(expectedPath.startsWith("/api"));
