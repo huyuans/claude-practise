@@ -10,32 +10,60 @@ import java.util.concurrent.TimeUnit;
 /**
  * 百炼 API 指标记录器
  * <p>
- * 支持 Micrometer 指标收集，可集成 Prometheus、Graphana 等监控系统
+ * 基于 Micrometer 实现指标收集，支持 Prometheus、Graphana 等监控系统。
+ * 自动记录 API 调用次数、延迟、token 使用量、缓存命中率等关键指标。
+ * <p>
+ * 指标命名规范：
+ * <ul>
+ *   <li>bailian.chat.requests - 聊天请求计数</li>
+ *   <li>bailian.chat.errors - 聊天错误计数</li>
+ *   <li>bailian.chat.duration - 聊天延迟分布</li>
+ *   <li>bailian.chat.tokens - Token 使用量</li>
+ *   <li>bailian.embedding.cache.hits - 缓存命中次数</li>
+ * </ul>
+ * <p>
+ * 使用方式：注入依赖 Spring Boot Actuator 和 Micrometer
  *
  * @author Kasper
  * @since 1.0.0
+ * @see MeterRegistry Micrometer 核心接口
  */
 @Slf4j
 public class BailianMetricsRecorder {
 
+    /** 指标名称前缀 */
     private static final String PREFIX = "bailian.";
 
+    /** Micrometer 注册表 */
     private final MeterRegistry meterRegistry;
 
-    // 指标名称常量
+    // ==================== 指标名称常量 ====================
+    
+    /** 聊天请求计数 */
     private static final String CHAT_REQUESTS = PREFIX + "chat.requests";
+    /** 聊天错误计数 */
     private static final String CHAT_ERRORS = PREFIX + "chat.errors";
+    /** 聊天延迟 */
     private static final String CHAT_DURATION = PREFIX + "chat.duration";
+    /** Token 使用量 */
     private static final String CHAT_TOKENS = PREFIX + "chat.tokens";
 
+    /** 流式请求计数 */
     private static final String STREAM_REQUESTS = PREFIX + "stream.requests";
+    /** 流式错误计数 */
     private static final String STREAM_ERRORS = PREFIX + "stream.errors";
+    /** 流式延迟 */
     private static final String STREAM_DURATION = PREFIX + "stream.duration";
 
+    /** Embedding 请求计数 */
     private static final String EMBEDDING_REQUESTS = PREFIX + "embedding.requests";
+    /** Embedding 错误计数 */
     private static final String EMBEDDING_ERRORS = PREFIX + "embedding.errors";
+    /** Embedding 延迟 */
     private static final String EMBEDDING_DURATION = PREFIX + "embedding.duration";
+    /** Embedding 缓存命中 */
     private static final String EMBEDDING_CACHE_HITS = PREFIX + "embedding.cache.hits";
+    /** Embedding 缓存未命中 */
     private static final String EMBEDDING_CACHE_MISSES = PREFIX + "embedding.cache.misses";
 
     public BailianMetricsRecorder(MeterRegistry meterRegistry) {

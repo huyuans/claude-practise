@@ -15,10 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 对话会话管理器
  * <p>
- * 支持多会话管理、自动过期清理、上下文长度限制
- * 
- * <pre>
+ * 支持多会话管理、自动过期清理、上下文长度限制。
+ * 适用于需要维护多轮对话状态的应用场景，如聊天机器人、客服系统等。
+ * <p>
  * 使用示例：
+ * <pre>
  * // 创建会话
  * String sessionId = conversationManager.createSession("你是一个助手");
  * 
@@ -26,11 +27,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * String reply1 = conversationManager.chat(sessionId, "你好").block();
  * String reply2 = conversationManager.chat(sessionId, "我刚才说了什么").block();
  * 
- * // 清空会话
+ * // 清空会话历史（保留会话）
  * conversationManager.clearSession(sessionId);
  * 
  * // 删除会话
  * conversationManager.removeSession(sessionId);
+ * </pre>
+ * <p>
+ * 配置示例：
+ * <pre>
+ * bailian:
+ *   conversation:
+ *     enabled: true
+ *     expire-minutes: 30    # 会话过期时间
+ *     max-tokens-per-session: 4000  # 单会话最大 token 数
  * </pre>
  *
  * @author Kasper
@@ -39,7 +49,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ConversationManager {
 
+    /** 百炼服务 */
     private final BailianService bailianService;
+    
+    /** 会话存储（sessionId -> Session） */
     private final Map<String, ConversationSession> sessions = new ConcurrentHashMap<>();
     
     /**

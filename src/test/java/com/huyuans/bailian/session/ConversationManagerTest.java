@@ -20,16 +20,26 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * ConversationManager 测试
+ * ConversationManager 单元测试
+ * <p>
+ * 测试对话会话管理器的功能，包括：
+ * <ul>
+ *   <li>会话的创建和删除</li>
+ *   <li>多轮对话的历史管理</li>
+ *   <li>系统提示词的设置</li>
+ *   <li>会话清空功能</li>
+ * </ul>
  *
  * @author Kasper
  * @since 1.0.0
  */
 class ConversationManagerTest {
 
+    /** Mock 的百炼服务 */
     @Mock
     private BailianService bailianService;
 
+    /** 待测试的会话管理器 */
     private ConversationManager manager;
 
     @BeforeEach

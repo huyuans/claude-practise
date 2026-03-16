@@ -15,10 +15,21 @@ import static org.mockito.Mockito.*;
 
 /**
  * BailianHealthIndicator 单元测试
+ * <p>
+ * 测试百炼 API 健康检查指示器的功能，包括：
+ * <ul>
+ *   <li>健康状态的构建</li>
+ *   <li>配置属性的访问</li>
+ *   <li>错误状态的处理</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("健康检查指示器测试")
 class BailianHealthIndicatorTest {
 
+    /** 配置属性 */
     private BailianProperties properties;
 
     @BeforeEach

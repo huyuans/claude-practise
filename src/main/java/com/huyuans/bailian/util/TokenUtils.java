@@ -9,12 +9,34 @@ import java.util.regex.Pattern;
  * 提供基于规则的 token 估算功能，用于快速估算文本的 token 数量。
  * 注意：这是估算值，实际值可能有 5-10% 的误差。
  * 精确计数需要使用分词器（如 tiktoken）。
+ * <p>
+ * 估算规则：
+ * <ul>
+ *   <li>中文字符：约 1.5 tokens/字</li>
+ *   <li>英文单词：约 1.3 tokens/词</li>
+ *   <li>标点符号和空格：约 0.5 tokens/个</li>
+ * </ul>
+ * <p>
+ * 使用示例：
+ * <pre>
+ * // 估算文本 token 数
+ * int tokens = TokenUtils.estimateTokens("你好世界");
+ * 
+ * // 检查是否超限
+ * if (TokenUtils.exceedsLimit(text, 4000)) {
+ *     text = TokenUtils.truncateToLimit(text, 4000);
+ * }
+ * 
+ * // 格式化显示
+ * System.out.println(TokenUtils.formatTokens(15000)); // "15.0K tokens"
+ * </pre>
  *
  * @author Kasper
  * @since 1.0.0
  */
 public class TokenUtils {
 
+    /** 私有构造，工具类 */
     private TokenUtils() {}
 
     /**

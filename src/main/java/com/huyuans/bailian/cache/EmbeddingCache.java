@@ -9,19 +9,32 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Embedding缓存实现
+ * Embedding 缓存实现
  * <p>
- * 使用简单的内存缓存，支持TTL过期和最大条目数限制。
+ * 使用简单的内存缓存，支持 TTL 过期和最大条目数限制。
+ * 适用于减少重复文本的 Embedding API 调用，降低成本和延迟。
  * <p>
  * 缓存策略说明：
  * <ul>
- *   <li>缓存Key：基于模型名称和文本内容生成哈希值</li>
- *   <li>过期策略：基于写入时间戳的TTL过期</li>
- *   <li>淘汰策略：当缓存满时，简单清除一半条目（非严格LRU）</li>
+ *   <li>缓存 Key：基于模型名称和文本内容生成哈希值</li>
+ *   <li>过期策略：基于写入时间戳的 TTL 过期</li>
+ *   <li>淘汰策略：当缓存满时，简单清除一半条目（非严格 LRU）</li>
  * </ul>
  * <p>
  * 注意：这是轻量级的内存实现，适用于开发测试环境。
- * 生产环境建议使用Caffeine（本地缓存）或Redis（分布式缓存）。
+ * 生产环境建议使用 Caffeine（本地缓存）或 Redis（分布式缓存）。
+ * <p>
+ * 使用示例：
+ * <pre>
+ * // 通过 BailianService 自动使用缓存
+ * EmbeddingResponse response = bailianService.embedding("你好").block();
+ * 
+ * // 直接使用缓存
+ * EmbeddingCache cache = new EmbeddingCache(config);
+ * String key = cache.generateKey("text-embedding-v3", List.of("你好"));
+ * cache.put(key, response);
+ * Optional&lt;EmbeddingResponse&gt; cached = cache.get(key);
+ * </pre>
  *
  * @author Kasper
  * @since 1.0.0
@@ -29,8 +42,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class EmbeddingCache {
 
+    /** 缓存存储 */
     private final ConcurrentHashMap<String, CacheEntry> cache;
+    
+    /** 缓存配置 */
     private final BailianProperties.EmbeddingCacheConfig config;
+    
+    /** 过期时间（毫秒） */
     private final long expireMillis;
 
     public EmbeddingCache(BailianProperties.EmbeddingCacheConfig config) {

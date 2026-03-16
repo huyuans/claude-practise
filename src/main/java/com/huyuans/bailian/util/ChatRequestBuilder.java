@@ -6,16 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 聊天请求构建器（提供更流畅的API）
+ * 聊天请求构建器
+ * <p>
+ * 提供流畅的 API 来构建 ChatRequest，简化多轮对话的消息组装。
+ * 使用链式调用，代码更清晰易读。
  * <p>
  * 使用示例：
  * <pre>
+ * // 简单对话
  * ChatRequest request = ChatRequestBuilder.create()
- *     .system("你是一个有帮助的助手")
  *     .user("你好")
- *     .assistant("你好！有什么可以帮助你的？")
- *     .user("介绍一下你自己")
- *     .temperature(0.8)
+ *     .build();
+ * 
+ * // 带系统提示的多轮对话
+ * ChatRequest request = ChatRequestBuilder.create("qwen-max")
+ *     .system("你是一个专业的程序员")
+ *     .user("帮我写一个排序算法")
+ *     .assistant("好的，这是一个快速排序...")
+ *     .user("能优化一下吗？")
+ *     .temperature(0.7)
+ *     .maxTokens(2000)
  *     .build();
  * </pre>
  *
@@ -24,10 +34,19 @@ import java.util.List;
  */
 public class ChatRequestBuilder {
 
+    /** 消息列表 */
     private final List<ChatRequest.Message> messages = new ArrayList<>();
+    
+    /** 模型名称 */
     private String model;
+    
+    /** 温度参数 */
     private Double temperature;
+    
+    /** Top-P 参数 */
     private Double topP;
+    
+    /** 最大 token 数 */
     private Integer maxTokens;
 
     private ChatRequestBuilder() {}

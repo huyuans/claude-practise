@@ -23,6 +23,34 @@ import java.util.function.Consumer;
 
 /**
  * 百炼模型服务层
+ * <p>
+ * 提供百炼 API 的高级封装，简化调用流程。主要功能包括：
+ * <ul>
+ *   <li>聊天对话：支持单轮、多轮、流式等多种模式</li>
+ *   <li>文本向量化：支持批量 Embedding，自动缓存结果</li>
+ *   <li>指标收集：自动记录请求延迟、token 使用量等</li>
+ * </ul>
+ * <p>
+ * 使用示例：
+ * <pre>
+ * // 注入服务
+ * @Autowired
+ * private BailianService bailianService;
+ * 
+ * // 简单聊天
+ * String reply = bailianService.chatContent("你好").block();
+ * 
+ * // 带系统提示的聊天
+ * String reply = bailianService.chatContent("你是助手", "你好").block();
+ * 
+ * // 流式聊天
+ * bailianService.chatStreamFlux("讲个故事")
+ *     .doOnNext(r -> System.out.print(r.getChoices().get(0).getDelta().getContent()))
+ *     .subscribe();
+ * 
+ * // Embedding
+ * EmbeddingResponse emb = bailianService.embedding("你好").block();
+ * </pre>
  *
  * @author Kasper
  * @since 1.0.0
@@ -30,9 +58,16 @@ import java.util.function.Consumer;
 @Slf4j
 public class BailianService {
 
+    /** API 客户端 */
     private final BailianClient bailianClient;
+    
+    /** 配置属性 */
     private final BailianProperties properties;
+    
+    /** Embedding 缓存 */
     private final EmbeddingCache embeddingCache;
+    
+    /** 指标记录器 */
     private final BailianMetricsRecorder metricsRecorder;
 
     public BailianService(BailianClient bailianClient, BailianProperties properties, 

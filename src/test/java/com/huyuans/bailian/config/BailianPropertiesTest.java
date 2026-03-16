@@ -7,6 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * BailianProperties 单元测试
+ * <p>
+ * 测试百炼配置属性类的功能，包括：
+ * <ul>
+ *   <li>默认配置值的正确性</li>
+ *   <li>配置值的修改和读取</li>
+ *   <li>各子配置项的默认值和修改</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("配置属性测试")
 class BailianPropertiesTest {

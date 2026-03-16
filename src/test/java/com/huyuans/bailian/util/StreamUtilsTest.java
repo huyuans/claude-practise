@@ -13,6 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * StreamUtils 单元测试
+ * <p>
+ * 测试流式响应工具类的功能，包括：
+ * <ul>
+ *   <li>流式响应文本收集</li>
+ *   <li>流式结果元信息提取</li>
+ *   <li>StringBuilder 实时输出</li>
+ *   <li>回调函数触发</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("流式响应工具类测试")
 class StreamUtilsTest {

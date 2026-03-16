@@ -11,6 +11,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TokenUtils 单元测试
+ * <p>
+ * 测试 Token 计数工具的功能，包括：
+ * <ul>
+ *   <li>中文、英文、混合文本的 token 估算</li>
+ *   <li>多条消息的 token 估算</li>
+ *   <li>文本截断功能</li>
+ *   <li>token 数量格式化</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("Token工具类测试")
 class TokenUtilsTest {

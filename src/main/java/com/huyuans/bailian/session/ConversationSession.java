@@ -10,7 +10,15 @@ import java.util.List;
 /**
  * 对话会话
  * <p>
- * 封装单次对话的上下文，包括消息历史和元数据
+ * 封装单次对话的上下文，包括消息历史、token 估算、过期时间等。
+ * 支持自动截断超出上下文限制的历史消息。
+ * <p>
+ * 特性：
+ * <ul>
+ *   <li>自动管理消息历史，支持多轮对话</li>
+ *   <li>粗略估算 token 数，超限时自动截断旧消息</li>
+ *   <li>记录最后活跃时间，支持会话过期清理</li>
+ * </ul>
  *
  * @author Kasper
  * @since 1.0.0
@@ -19,17 +27,21 @@ import java.util.List;
 public class ConversationSession {
 
     /**
-     * 会话ID
+     * 会话 ID
      */
     private final String sessionId;
 
     /**
      * 系统提示词
+     * <p>
+     * 在所有消息之前添加，用于设定 AI 行为
      */
     private String systemPrompt;
 
     /**
      * 消息历史
+     * <p>
+     * 按时间顺序存储用户和助手的对话
      */
     private final List<ChatRequest.Message> messages = new ArrayList<>();
 
@@ -40,16 +52,22 @@ public class ConversationSession {
 
     /**
      * 最后活跃时间
+     * <p>
+     * 用于判断会话是否过期
      */
     private Instant lastActiveAt = Instant.now();
 
     /**
      * 预估 token 数
+     * <p>
+     * 粗略估算，用于控制上下文长度
      */
     private int estimatedTokens = 0;
 
     /**
      * 最大 token 数限制
+     * <p>
+     * 超出时会自动截断旧消息
      */
     private int maxTokens = 4000;
 

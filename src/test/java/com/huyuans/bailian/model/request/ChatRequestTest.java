@@ -10,6 +10,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * ChatRequest 单元测试
+ * <p>
+ * 测试聊天请求模型的功能，包括：
+ * <ul>
+ *   <li>请求参数的构建和读取</li>
+ *   <li>消息静态工厂方法</li>
+ *   <li>额外参数的处理</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("聊天请求模型测试")
 class ChatRequestTest {

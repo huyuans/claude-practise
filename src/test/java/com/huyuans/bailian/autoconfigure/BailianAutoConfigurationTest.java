@@ -14,10 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * BailianAutoConfiguration 单元测试
+ * <p>
+ * 测试百炼 SDK 的自动配置功能，包括：
+ * <ul>
+ *   <li>配置属性的默认值和修改</li>
+ *   <li>各种配置子项的正确性</li>
+ *   <li>核心组件的创建</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("自动配置测试")
 class BailianAutoConfigurationTest {
 
+    /** 应用上下文测试运行器 */
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(BailianAutoConfiguration.class));
 

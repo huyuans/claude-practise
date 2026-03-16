@@ -11,13 +11,35 @@ import java.util.function.Consumer;
 /**
  * 流式响应工具类
  * <p>
- * 提供流式响应的处理和收集功能
+ * 提供流式响应的处理和收集功能，简化 SSE 流的处理逻辑。
+ * 主要功能包括：
+ * <ul>
+ *   <li>收集流式响应为完整文本</li>
+ *   <li>提取流式响应的元信息（模型、ID、完成原因）</li>
+ *   <li>实时输出到 StringBuilder</li>
+ * </ul>
+ * <p>
+ * 使用示例：
+ * <pre>
+ * // 收集完整文本
+ * String fullText = StreamUtils.collectText(flux).block();
+ * 
+ * // 收集完整结果（包含元信息）
+ * StreamResult result = StreamUtils.collectResult(flux).block();
+ * System.out.println("模型: " + result.getModel());
+ * System.out.println("内容: " + result.getContent());
+ * 
+ * // 实时输出
+ * StringBuilder sb = new StringBuilder();
+ * StreamUtils.streamTo(flux, sb, content -> System.out.print(content)).block();
+ * </pre>
  *
  * @author Kasper
  * @since 1.0.0
  */
 public class StreamUtils {
 
+    /** 私有构造，工具类 */
     private StreamUtils() {}
 
     /**

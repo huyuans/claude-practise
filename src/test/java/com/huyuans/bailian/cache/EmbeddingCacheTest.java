@@ -14,11 +14,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * EmbeddingCache 单元测试
+ * <p>
+ * 测试 Embedding 缓存的核心功能，包括：
+ * <ul>
+ *   <li>缓存 key 生成和一致性</li>
+ *   <li>缓存的存取和过期</li>
+ *   <li>缓存禁用时的行为</li>
+ *   <li>缓存淘汰策略</li>
+ * </ul>
+ *
+ * @author Kasper
+ * @since 1.0.0
  */
 @DisplayName("Embedding缓存测试")
 class EmbeddingCacheTest {
 
+    /** 待测试的缓存实例 */
     private EmbeddingCache cache;
+    
+    /** 缓存配置 */
     private BailianProperties.EmbeddingCacheConfig config;
 
     @BeforeEach
