@@ -5,6 +5,23 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 百炼模型配置属性类
+ * <p>
+ * 通过 application.yml/properties 配置，前缀为 "bailian"
+ * <p>
+ * 配置示例：
+ * <pre>
+ * bailian:
+ *   api-key: ${DASHSCOPE_API_KEY}  # 推荐使用环境变量
+ *   base-url: https://dashscope.aliyuncs.com
+ *   default-model: qwen-turbo
+ *   timeout: 60000
+ *   retry:
+ *     enabled: true
+ *     max-attempts: 3
+ *   connection-pool:
+ *     enabled: true
+ *     max-connections: 100
+ * </pre>
  *
  * @author Kasper
  * @since 1.0.0

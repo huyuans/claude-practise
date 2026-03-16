@@ -25,9 +25,22 @@ import java.util.UUID;
 
 /**
  * 百炼模型API客户端
+ * <p>
+ * 阿里云百炼大模型服务的核心HTTP客户端，基于Spring WebFlux实现响应式调用。
+ * 支持同步/流式聊天、文本向量嵌入(Embedding)等核心功能。
+ * <p>
+ * 主要特性：
+ * <ul>
+ *   <li>连接池复用：减少TCP握手开销，提升高并发性能</li>
+ *   <li>自动重试：指数退避策略，应对临时故障</li>
+ *   <li>请求追踪：通过X-Correlation-ID实现链路追踪</li>
+ *   <li>错误处理：统一异常封装，便于业务层处理</li>
+ * </ul>
  *
  * @author Kasper
  * @since 1.0.0
+ * @see BailianException 自定义异常类
+ * @see BailianProperties 配置属性
  */
 @Slf4j
 @Component

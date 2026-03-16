@@ -11,8 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Embedding缓存实现
  * <p>
- * 使用简单的内存缓存，支持TTL过期和最大条目数限制
- * 生产环境建议使用Caffeine或Redis
+ * 使用简单的内存缓存，支持TTL过期和最大条目数限制。
+ * <p>
+ * 缓存策略说明：
+ * <ul>
+ *   <li>缓存Key：基于模型名称和文本内容生成哈希值</li>
+ *   <li>过期策略：基于写入时间戳的TTL过期</li>
+ *   <li>淘汰策略：当缓存满时，简单清除一半条目（非严格LRU）</li>
+ * </ul>
+ * <p>
+ * 注意：这是轻量级的内存实现，适用于开发测试环境。
+ * 生产环境建议使用Caffeine（本地缓存）或Redis（分布式缓存）。
  *
  * @author Kasper
  * @since 1.0.0
