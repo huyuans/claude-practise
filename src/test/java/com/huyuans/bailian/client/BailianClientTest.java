@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,7 +82,7 @@ class BailianClientTest {
     void testBuildChatRequest() {
         ChatRequest request = ChatRequest.builder()
                 .model("qwen-turbo")
-                .messages(List.of(
+                .messages(Arrays.asList(
                         ChatRequest.Message.user("Hello")
                 ))
                 .temperature(0.7)
@@ -98,7 +99,7 @@ class BailianClientTest {
     void testBuildStreamChatRequest() {
         ChatRequest request = ChatRequest.builder()
                 .model("qwen-turbo")
-                .messages(List.of(
+                .messages(Arrays.asList(
                         ChatRequest.Message.user("Hello")
                 ))
                 .build();
@@ -112,7 +113,7 @@ class BailianClientTest {
     void testBuildEmbeddingRequest() {
         EmbeddingRequest request = EmbeddingRequest.builder()
                 .model("text-embedding-v3")
-                .input(List.of("test text"))
+                .input(Arrays.asList("test text"))
                 .build();
 
         assertNotNull(request);
@@ -126,7 +127,7 @@ class BailianClientTest {
         ChatResponse response = ChatResponse.builder()
                 .id("test-id")
                 .model("qwen-turbo")
-                .choices(List.of(
+                .choices(Arrays.asList(
                         ChatResponse.Choice.builder()
                                 .index(0)
                                 .message(ChatResponse.Message.builder()
@@ -155,9 +156,9 @@ class BailianClientTest {
         EmbeddingResponse response = EmbeddingResponse.builder()
                 .id("emb-id")
                 .model("text-embedding-v3")
-                .embeddings(List.of(
+                .embeddings(Arrays.asList(
                         EmbeddingResponse.Embedding.builder()
-                                .embedding(List.of(0.1f, 0.2f, 0.3f))
+                                .embedding(Arrays.asList(0.1f, 0.2f, 0.3f))
                                 .index(0)
                                 .build()
                 ))
@@ -187,7 +188,7 @@ class BailianClientTest {
         choice.setDelta(delta);
         choice.setFinishReason(null);
 
-        response.setChoices(List.of(choice));
+        response.setChoices(Arrays.asList(choice));
 
         assertNotNull(response);
         assertEquals("stream-id", response.getId());

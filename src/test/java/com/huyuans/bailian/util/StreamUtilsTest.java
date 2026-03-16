@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ class StreamUtilsTest {
         choice.setFinishReason(finishReason);
 
         ChatStreamResponse response = new ChatStreamResponse();
-        response.setChoices(List.of(choice));
+        response.setChoices(Arrays.asList(choice));
         response.setId("test-id");
         response.setModel("test-model");
 
@@ -131,7 +132,7 @@ class StreamUtilsTest {
         );
 
         StepVerifier.create(StreamUtils.collectLines(flux))
-                .expectNext(List.of("Line1", "Line2"))
+                .expectNext(Arrays.asList("Line1", "Line2"))
                 .verifyComplete();
     }
 
@@ -164,7 +165,7 @@ class StreamUtilsTest {
                 .verifyComplete();
 
         assertEquals("XY", builder.toString());
-        assertEquals(List.of("X", "Y"), callbackContents);
+        assertEquals(Arrays.asList("X", "Y"), callbackContents);
     }
 
     @Test
@@ -186,7 +187,7 @@ class StreamUtilsTest {
         ChatStreamResponse.Delta nullDelta = new ChatStreamResponse.Delta();
         nullDelta.setContent(null);
         choice.setDelta(nullDelta);
-        responseWithNullDelta.setChoices(List.of(choice));
+        responseWithNullDelta.setChoices(Arrays.asList(choice));
 
         Flux<ChatStreamResponse> flux = Flux.just(
                 responseWithNullDelta,

@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import com.huyuans.bailian.util.StreamUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -106,7 +107,7 @@ public class BailianService {
     public Mono<ChatResponse> chatWithSystem(String systemPrompt, String userMessage) {
         return chat(ChatRequest.builder()
                 .model(properties.getDefaultModel())
-                .messages(List.of(
+                .messages(Arrays.asList(
                         ChatRequest.Message.builder()
                                 .role("system")
                                 .content(systemPrompt)

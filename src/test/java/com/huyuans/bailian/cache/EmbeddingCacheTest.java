@@ -158,7 +158,7 @@ class EmbeddingCacheTest {
         EmbeddingResponse response = new EmbeddingResponse();
         response.setId("test-id-" + System.currentTimeMillis());
         response.setModel("text-embedding-v3");
-        response.setEmbeddings(List.of(
+        response.setEmbeddings(Arrays.asList(
                 EmbeddingResponse.Embedding.builder()
                         .embedding(Arrays.asList(0.1f, 0.2f, 0.3f))
                         .index(0)

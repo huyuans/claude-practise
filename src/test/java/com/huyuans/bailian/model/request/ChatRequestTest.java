@@ -3,6 +3,8 @@ package com.huyuans.bailian.model.request;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ class ChatRequestTest {
     void testCreateChatRequest() {
         ChatRequest request = ChatRequest.builder()
                 .model("qwen-turbo")
-                .messages(List.of(
+                .messages(Arrays.asList(
                         ChatRequest.Message.user("Hello")
                 ))
                 .temperature(0.7)
@@ -128,8 +130,11 @@ class ChatRequestTest {
     @Test
     @DisplayName("额外参数测试")
     void testExtraParameters() {
+        Map<String, Object> extraParams = new HashMap<>();
+        extraParams.put("key1", "value1");
+        extraParams.put("key2", 123);
         ChatRequest request = ChatRequest.builder()
-                .extraParameters(Map.of("key1", "value1", "key2", 123))
+                .extraParameters(extraParams)
                 .build();
 
         assertNotNull(request.getExtraParameters());

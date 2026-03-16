@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,7 +71,7 @@ class ConversationManagerTest {
     void testChat() {
         
         ChatResponse mockResponse = new ChatResponse();
-        mockResponse.setChoices(List.of(
+        mockResponse.setChoices(Arrays.asList(
                 new Choice(0, new Message("assistant", "你好！我是助手"), null)
         ));
         when(bailianService.chat(any(ChatRequest.class))).thenReturn(Mono.just(mockResponse));
@@ -95,10 +96,10 @@ class ConversationManagerTest {
     void testMultiTurnChat() {
         
         ChatResponse response1 = new ChatResponse();
-        response1.setChoices(List.of(new Choice(0, new Message("assistant", "回复1"), null)));
+        response1.setChoices(Arrays.asList(new Choice(0, new Message("assistant", "回复1"), null)));
         
         ChatResponse response2 = new ChatResponse();
-        response2.setChoices(List.of(new Choice(0, new Message("assistant", "回复2"), null)));
+        response2.setChoices(Arrays.asList(new Choice(0, new Message("assistant", "回复2"), null)));
         
         when(bailianService.chat(any(ChatRequest.class)))
                 .thenReturn(Mono.just(response1))
@@ -134,7 +135,7 @@ class ConversationManagerTest {
     @DisplayName("清空会话历史")
     void testClearSession() {
         ChatResponse mockResponse = new ChatResponse();
-        mockResponse.setChoices(List.of(new Choice(0, new Message("assistant", "回复"), null)));
+        mockResponse.setChoices(Arrays.asList(new Choice(0, new Message("assistant", "回复"), null)));
         when(bailianService.chat(any(ChatRequest.class))).thenReturn(Mono.just(mockResponse));
 
         String sessionId = manager.createSession();

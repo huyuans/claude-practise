@@ -19,6 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -210,7 +211,7 @@ class BailianServiceTest {
         when(embeddingCache.get("test-key")).thenReturn(Optional.empty());
         when(bailianClient.embedding(any(EmbeddingRequest.class))).thenReturn(Mono.just(mockResponse));
 
-        List<String> texts = List.of("text1", "text2");
+        List<String> texts = Arrays.asList("text1", "text2");
         StepVerifier.create(service.embedding(texts))
                 .assertNext(response -> assertNotNull(response))
                 .verifyComplete();
@@ -229,7 +230,7 @@ class BailianServiceTest {
         when(bailianClient.chat(any(ChatRequest.class))).thenReturn(Mono.just(mockResponse));
 
         ChatRequest request = ChatRequest.builder()
-                .messages(List.of(ChatRequest.Message.user("Hi")))
+                .messages(Arrays.asList(ChatRequest.Message.user("Hi")))
                 .build();
 
         StepVerifier.create(service.chat(request))
@@ -256,7 +257,7 @@ class BailianServiceTest {
         return ChatResponse.builder()
                 .id("test-id")
                 .model("qwen-turbo")
-                .choices(List.of(choice))
+                .choices(Arrays.asList(choice))
                 .usage(ChatResponse.Usage.builder()
                         .promptTokens(10)
                         .completionTokens(20)
@@ -273,20 +274,20 @@ class BailianServiceTest {
         choice.setDelta(delta);
 
         ChatStreamResponse response = new ChatStreamResponse();
-        response.setChoices(List.of(choice));
+        response.setChoices(Arrays.asList(choice));
         return response;
     }
 
     private EmbeddingResponse createEmbeddingResponse() {
         EmbeddingResponse.Embedding embedding = EmbeddingResponse.Embedding.builder()
-                .embedding(List.of(0.1f, 0.2f, 0.3f))
+                .embedding(Arrays.asList(0.1f, 0.2f, 0.3f))
                 .index(0)
                 .build();
 
         return EmbeddingResponse.builder()
                 .id("emb-id")
                 .model("text-embedding-v3")
-                .embeddings(List.of(embedding))
+                .embeddings(Arrays.asList(embedding))
                 .build();
     }
 }
