@@ -202,7 +202,8 @@ public class BailianClient {
 
 
     private boolean isRetryable(Throwable error) {
-        if (error instanceof WebClientResponseException e) {
+        if (error instanceof WebClientResponseException) {
+            WebClientResponseException e = (WebClientResponseException) error;
             int status = e.getStatusCode().value();
             
             return status >= 500 || status == 429;

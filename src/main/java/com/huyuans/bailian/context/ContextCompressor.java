@@ -60,11 +60,21 @@ public class ContextCompressor {
 
         partitionMessages(messages, preserved, toCompress);
 
-        List<Message> compressed = switch (strategy) {
-            case TRUNCATE -> truncateMessages(toCompress, preserved);
-            case SUMMARIZE -> summarizeMessages(toCompress, preserved);
-            case SLIDING_WINDOW -> slidingWindowCompress(toCompress, preserved);
-        };
+        List<Message> compressed;
+        switch (strategy) {
+            case TRUNCATE:
+                compressed = truncateMessages(toCompress, preserved);
+                break;
+            case SUMMARIZE:
+                compressed = summarizeMessages(toCompress, preserved);
+                break;
+            case SLIDING_WINDOW:
+                compressed = slidingWindowCompress(toCompress, preserved);
+                break;
+            default:
+                compressed = new ArrayList<>(toCompress);
+                compressed.addAll(preserved);
+        }
 
         int newTokenCount = estimateTokens(compressed);
         double ratio = (double) newTokenCount / estimatedTokens;
@@ -167,7 +177,7 @@ public class ContextCompressor {
         for (String word : text.split("\\s+")) {
             String lower = word.toLowerCase().replaceAll("[^a-zA-Z0-9\u4e00-\u9fa5]", "");
             if (!STOP_WORDS.contains(lower) && lower.length() > 1) {
-                wordFreq.merge(lower, 1, Integer::sum);
+                wordFreq.put(lower, wordFreq.getOrDefault(lower, 0) + 1);
             }
         }
 

@@ -86,14 +86,14 @@ public class EmbeddingCache {
             return Optional.empty();
         }
 
-        if (System.currentTimeMillis() - entry.timestamp > expireMillis) {
+        if (System.currentTimeMillis() - entry.getTimestamp() > expireMillis) {
             log.debug("缓存已过期: {}", key);
             cache.remove(key);
             return Optional.empty();
         }
 
         log.debug("缓存命中: {}", key);
-        return Optional.of(entry.response);
+        return Optional.of(entry.getResponse());
     }
 
     
@@ -138,5 +138,21 @@ public class EmbeddingCache {
         return cache.size();
     }
 
-    private record CacheEntry(EmbeddingResponse response, long timestamp) {}
+    private static class CacheEntry {
+        private final EmbeddingResponse response;
+        private final long timestamp;
+
+        CacheEntry(EmbeddingResponse response, long timestamp) {
+            this.response = response;
+            this.timestamp = timestamp;
+        }
+
+        public EmbeddingResponse getResponse() {
+            return response;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+    }
 }
