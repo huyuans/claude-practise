@@ -3,6 +3,10 @@ package com.huyuans.bailian.autoconfigure;
 import com.huyuans.bailian.cache.EmbeddingCache;
 import com.huyuans.bailian.client.BailianClient;
 import com.huyuans.bailian.config.BailianProperties;
+import com.huyuans.bailian.controller.ChatController;
+import com.huyuans.bailian.controller.HealthController;
+import com.huyuans.bailian.controller.MetricsController;
+import com.huyuans.bailian.controller.ModelController;
 import com.huyuans.bailian.metrics.BailianMetricsRecorder;
 import com.huyuans.bailian.service.BailianService;
 import com.huyuans.bailian.session.ConversationManager;
@@ -124,7 +128,7 @@ public class BailianAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "bailian.conversation", name = "enabled", havingValue = "true", matchIfMissing = false)
-    public ConversationManager conversationManager(BailianService bailianService, 
+    public ConversationManager conversationManager(BailianService bailianService,
                                                     BailianProperties properties) {
         BailianProperties.Conversation conversation = properties.getConversation();
         return new ConversationManager(
@@ -132,5 +136,35 @@ public class BailianAutoConfiguration {
                 conversation.getExpireMinutes(),
                 conversation.getMaxTokensPerSession()
         );
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bailian.controller", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public ChatController chatController(BailianService bailianService) {
+        return new ChatController(bailianService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bailian.controller", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public ModelController modelController(BailianProperties properties) {
+        return new ModelController(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bailian.controller", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public HealthController healthController(BailianProperties properties) {
+        return new HealthController(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "bailian.controller", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public MetricsController metricsController(
+            @Autowired(required = false) MeterRegistry meterRegistry,
+            BailianMetricsRecorder metricsRecorder) {
+        return new MetricsController(meterRegistry, metricsRecorder);
     }
 }
