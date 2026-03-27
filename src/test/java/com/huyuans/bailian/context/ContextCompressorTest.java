@@ -1,7 +1,6 @@
 package com.huyuans.bailian.context;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -9,7 +8,9 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("上下文压缩器测试")
+/**
+ * Unit tests for ContextCompressor.
+ */
 class ContextCompressorTest {
 
     private ContextCompressor compressor;
@@ -20,18 +21,16 @@ class ContextCompressorTest {
     }
 
     @Test
-    @DisplayName("空消息列表测试")
     void testEmptyMessages() {
         ContextCompressor.CompressionResult result = compressor.compress(Collections.emptyList());
         assertTrue(result.getMessages().isEmpty());
     }
 
     @Test
-    @DisplayName("未超限消息不压缩测试")
     void testNoCompressionNeeded() {
         ContextCompressor.CompressionResult result = compressor.compress(Arrays.asList(
-                ContextCompressor.Message.of("user", "你好"),
-                ContextCompressor.Message.of("assistant", "你好！")
+                ContextCompressor.Message.of("user", "Hello"),
+                ContextCompressor.Message.of("assistant", "Hi there!")
         ));
 
         assertEquals(2, result.getMessages().size());
@@ -39,15 +38,13 @@ class ContextCompressorTest {
     }
 
     @Test
-    @DisplayName("Message静态工厂方法测试")
     void testMessageStaticFactory() {
-        ContextCompressor.Message message = ContextCompressor.Message.of("user", "测试内容");
+        ContextCompressor.Message message = ContextCompressor.Message.of("user", "Test content");
         assertEquals("user", message.getRole());
-        assertEquals("测试内容", message.getContent());
+        assertEquals("Test content", message.getContent());
     }
 
     @Test
-    @DisplayName("Builder测试")
     void testBuilder() {
         ContextCompressor custom = ContextCompressor.builder()
                 .maxTokens(2000)

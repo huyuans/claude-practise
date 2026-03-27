@@ -1,7 +1,6 @@
 package com.huyuans.bailian.router;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -9,7 +8,9 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("语义路由器测试")
+/**
+ * Unit tests for SemanticRouter.
+ */
 class SemanticRouterTest {
 
     private SemanticRouter router;
@@ -29,21 +30,18 @@ class SemanticRouterTest {
     }
 
     @Test
-    @DisplayName("路由测试")
     void testRoute() {
         SemanticRouter.RoutingResult result = router.route("你好");
         assertEquals("chat", result.getRouteName());
     }
 
     @Test
-    @DisplayName("默认路由测试")
     void testDefaultRoute() {
         SemanticRouter.RoutingResult result = router.route("xyz");
         assertEquals("default", result.getRouteName());
     }
 
     @Test
-    @DisplayName("空输入测试")
     void testEmptyInput() {
         SemanticRouter.RoutingResult result = router.route("");
         assertEquals("default", result.getRouteName());

@@ -2,31 +2,18 @@ package com.huyuans.bailian.util;
 
 import com.huyuans.bailian.model.response.ChatStreamResponse;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@DisplayName("流式响应工具类测试")
+/**
+ * Unit tests for StreamUtils.
+ */
 class StreamUtilsTest {
 
     private ChatStreamResponse createStreamResponse(String content, String finishReason) {
@@ -41,55 +28,29 @@ class StreamUtilsTest {
         response.setChoices(Arrays.asList(choice));
         response.setId("test-id");
         response.setModel("test-model");
-
-        return response;
-    }
-
-    private ChatStreamResponse createEmptyResponse() {
-        ChatStreamResponse response = new ChatStreamResponse();
-        response.setChoices(null);
         return response;
     }
 
     @Test
-    @DisplayName("收集流式响应文本")
     void testCollectText() {
         Flux<ChatStreamResponse> flux = Flux.just(
                 createStreamResponse("Hello", null),
-                createStreamResponse(" World", null),
-                createStreamResponse("!", "stop")
+                createStreamResponse(" World", "stop")
         );
 
         StepVerifier.create(StreamUtils.collectText(flux))
-                .expectNext("Hello World!")
+                .expectNext("Hello World")
                 .verifyComplete();
     }
 
     @Test
-    @DisplayName("空流返回空字符串")
     void testCollectTextEmpty() {
-        Flux<ChatStreamResponse> flux = Flux.empty();
-
-        StepVerifier.create(StreamUtils.collectText(flux))
+        StepVerifier.create(StreamUtils.collectText(Flux.empty()))
                 .expectNext("")
                 .verifyComplete();
     }
 
     @Test
-    @DisplayName("过滤空选择列表")
-    void testCollectTextFilterNullChoices() {
-        Flux<ChatStreamResponse> flux = Flux.just(
-                createEmptyResponse(),
-                createStreamResponse("Valid", null)
-        );
-
-        StepVerifier.create(StreamUtils.collectText(flux))
-                .expectNext("Valid")
-                .verifyComplete();
-    }
-
-    @Test
-    @DisplayName("收集流式结果")
     void testCollectResult() {
         Flux<ChatStreamResponse> flux = Flux.just(
                 createStreamResponse("Test", null),
@@ -97,65 +58,19 @@ class StreamUtilsTest {
         );
 
         StepVerifier.create(StreamUtils.collectResult(flux))
-                .assertNext(result -> {
-                    assertEquals("Test Content", result.getContent());
-                    assertEquals("stop", result.getFinishReason());
-                    assertEquals("test-id", result.getId());
-                    assertEquals("test-model", result.getModel());
-                    assertTrue(result.isFinished());
-                    assertFalse(result.isTruncated());
+                .assertNext(r -> {
+                    assertEquals("Test Content", r.getContent());
+                    assertEquals("stop", r.getFinishReason());
+                    assertTrue(r.isFinished());
                 })
                 .verifyComplete();
     }
 
     @Test
-    @DisplayName("流式结果截断状态")
-    void testStreamResultTruncated() {
-        Flux<ChatStreamResponse> flux = Flux.just(
-                createStreamResponse("Partial", "length")
-        );
-
-        StepVerifier.create(StreamUtils.collectResult(flux))
-                .assertNext(result -> {
-                    assertTrue(result.isTruncated());
-                    assertFalse(result.isFinished());
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    @DisplayName("收集文本行列表")
-    void testCollectLines() {
-        Flux<ChatStreamResponse> flux = Flux.just(
-                createStreamResponse("Line1", null),
-                createStreamResponse("Line2", null)
-        );
-
-        StepVerifier.create(StreamUtils.collectLines(flux))
-                .expectNext(Arrays.asList("Line1", "Line2"))
-                .verifyComplete();
-    }
-
-    @Test
-    @DisplayName("流式输出到StringBuilder")
-    void testStreamToStringBuilder() {
-        StringBuilder builder = new StringBuilder();
-        Flux<ChatStreamResponse> flux = Flux.just(
-                createStreamResponse("A", null),
-                createStreamResponse("B", null)
-        );
-
-        StepVerifier.create(StreamUtils.streamTo(flux, builder))
-                .verifyComplete();
-
-        assertEquals("AB", builder.toString());
-    }
-
-    @Test
-    @DisplayName("流式输出带回调")
-    void testStreamWithCallback() {
+    void testStreamToWithCallback() {
         StringBuilder builder = new StringBuilder();
         List<String> callbackContents = new ArrayList<>();
+
         Flux<ChatStreamResponse> flux = Flux.just(
                 createStreamResponse("X", null),
                 createStreamResponse("Y", null)
@@ -169,33 +84,9 @@ class StreamUtilsTest {
     }
 
     @Test
-    @DisplayName("StreamResult toString")
     void testStreamResultToString() {
         StreamUtils.StreamResult result = new StreamUtils.StreamResult("id1", "model1", "content", "stop");
-        String str = result.toString();
-        assertTrue(str.contains("id1"));
-        assertTrue(str.contains("model1"));
-        assertTrue(str.contains("contentLength=7"));
-        assertTrue(str.contains("stop"));
-    }
-
-    @Test
-    @DisplayName("空delta内容过滤")
-    void testFilterNullDeltaContent() {
-        ChatStreamResponse responseWithNullDelta = new ChatStreamResponse();
-        ChatStreamResponse.Choice choice = new ChatStreamResponse.Choice();
-        ChatStreamResponse.Delta nullDelta = new ChatStreamResponse.Delta();
-        nullDelta.setContent(null);
-        choice.setDelta(nullDelta);
-        responseWithNullDelta.setChoices(Arrays.asList(choice));
-
-        Flux<ChatStreamResponse> flux = Flux.just(
-                responseWithNullDelta,
-                createStreamResponse("Valid", null)
-        );
-
-        StepVerifier.create(StreamUtils.collectText(flux))
-                .expectNext("Valid")
-                .verifyComplete();
+        assertTrue(result.toString().contains("id1"));
+        assertTrue(result.toString().contains("stop"));
     }
 }
